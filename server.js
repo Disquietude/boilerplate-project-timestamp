@@ -21,7 +21,7 @@ app.get("/", function (req, res) {
 
 // your first API endpoint... 
 app.get("/api/timestamp/:date_string?", function(req, res) {
-  let output;
+  let output = {};
   let input = req.params.date_string;
   if (input) {
     let date;
@@ -34,14 +34,13 @@ app.get("/api/timestamp/:date_string?", function(req, res) {
       date = new Date(input);
     }
 
-    if (date) {
+    if (date.toUTCString() !== "Invalid Date") {
       output = {
         unix: date.getTime(),
         utc: date.toUTCString()
       }
     }
     else {
-      console.log("Invalid Date String");
       output = {
         error: "Invalid Date"
       }
