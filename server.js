@@ -20,28 +20,41 @@ app.get("/", function (req, res) {
 });
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
+app.get("/api/timestamp/:date_string?", function(req, res) {
+  let output;
+  let input = req.params.date_string;
+  if (input) {
+    let date;
 
-app.get("/api/timestamp", function(req, res) {
-  // let dateString = req.params.date_string;
-  // let timestamp;
-  // if (dateString === undefined) {
-  //   timestamp = {
-  //     unix: new Date(),
-  //     utc: new Date().toUTCString()
-  //   };
-  // }
-  // res.json(timestamp);
-  let unix, utc;
-  unix = new Date().getTime();
-  utc = new Date().toUTCString();
+    //if input contains only numerals, convert it to a number before passing it to the Date constructor
+    if (!input.match(/\D/)) {
+      date = new Date(Number.parseInt(input));
+    }
+    else {
+      date = new Date(input);
+    }
 
-  res.json({
-    unix: unix,
-    utc: utc
-  });
+    if (date) {
+      output = {
+        unix: date.getTime(),
+        utc: date.toUTCString()
+      }
+    }
+    else {
+      console.log("Invalid Date String");
+      output = {
+        error: "Invalid Date"
+      }
+    }
+  }
+  else {
+    output = {
+      unix: new Date().getTime(),
+      utc: new Date().toUTCString()
+    }
+  }
+
+  res.json(output);
 });
 
 // listen for requests :)
